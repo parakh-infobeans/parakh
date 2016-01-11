@@ -3,6 +3,7 @@ define('NEWLINE','<BR/>');
 define('EMAIL_SUBJECT_RECEIVED', 'Parakh - Rating Request Received');
 define('EMAIL_SUBJECT_RESPONSE', 'Parakh - Your request has been ');
 define('EMAIL_FOOTER', 'Thanks, '.NEWLINE.'Parakh Team');
+define("PRACTICE_HEAD_EMAIL","abhinav.shrivastava@infobeans.com");
 require_once REL_PATH.'class/class.smtp.php';
 require_once REL_PATH.'class/class.phpmailer.php';
 
@@ -99,6 +100,28 @@ function notifyAwardOne($data)
     $to['email'] = $userObj->get_user_email($data['user_id']);
     if(ENVIRONMENT!='LIVE')
         $to['email']=TM_EMAIL;
+    smtp_send_mail($to, $subject, $message);
+    notifyCopyAwardOne($data);
+}
+
+function notifyCopyAwardOne($data)
+{
+    $request_status = ($data['rating']==='1')? 'approved' : 'declined';
+    $work_desc = $data['work_desc'];
+    $rating = ($request_status == 'approved') ? '+1' : '-1';
+    $userObj= new rating();
+    $lead_name = $userObj->get_user_full_name($_SESSION['userinfo']->id);
+    $team_member_name=$userObj->get_user_full_name($data['user_id']);
+    $to['name']=$team_member_name;
+    $team_member_name=explode(" ", trim($team_member_name));
+    $team_member_name=$team_member_name[0];
+    $subject = 'Parakh - '.$team_member_name.' has been rated';
+    $message.= $team_member_name.' has received a '.$rating.' rating by '.$lead_name.' for "'.$work_desc.'".'.NEWLINE;
+    $message.= NEWLINE;
+    $message.= EMAIL_FOOTER;
+    $to['email'] = 'priyesh.mehta@infobeans.com';
+    if(ENVIRONMENT=='LIVE')
+        $to['email']=PRACTICE_HEAD_EMAIL;
     smtp_send_mail($to, $subject, $message);
 }
 
