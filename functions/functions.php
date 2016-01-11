@@ -3,7 +3,6 @@ define('NEWLINE','<BR/>');
 define('EMAIL_SUBJECT_RECEIVED', 'Parakh - Rating Request Received');
 define('EMAIL_SUBJECT_RESPONSE', 'Parakh - Your request has been ');
 define('EMAIL_FOOTER', 'Thanks, '.NEWLINE.'Parakh Team');
-define("PRACTICE_HEAD_EMAIL","abhinav.shrivastava@infobeans.com");
 require_once REL_PATH.'class/class.smtp.php';
 require_once REL_PATH.'class/class.phpmailer.php';
 
@@ -101,6 +100,8 @@ function notifyAwardOne($data)
     if(ENVIRONMENT!='LIVE')
         $to['email']=TM_EMAIL;
     smtp_send_mail($to, $subject, $message);
+    
+    /* This will send the copy of eamil to practise head whenever the team member is rated +1 or -1 */
     notifyCopyAwardOne($data);
 }
 
@@ -115,11 +116,16 @@ function notifyCopyAwardOne($data)
     $to['name']=$team_member_name;
     $team_member_name=explode(" ", trim($team_member_name));
     $team_member_name=$team_member_name[0];
-    $subject = 'Parakh - '.$team_member_name.' has been rated';
-    $message.= $team_member_name.' has received a '.$rating.' rating by '.$lead_name.' for "'.$work_desc.'".'.NEWLINE;
+    $subject = 'Parakh - New rating alert';
+    if($work_desc != ''){
+      $message.= $team_member_name.' has received a '.$rating.' rating by '.$lead_name.' for "'.$work_desc.'".'.NEWLINE;
+    }else{
+      $work_desc = 'N/A';
+      $message.= $team_member_name.' has received a '.$rating.' rating by '.$lead_name.' for "'.$work_desc.'".'.NEWLINE;
+    }    
     $message.= NEWLINE;
     $message.= EMAIL_FOOTER;
-    $to['email'] = 'priyesh.mehta@infobeans.com';
+    $to['email'] = TEST_COPY_EMAIL;
     if(ENVIRONMENT=='LIVE')
         $to['email']=PRACTICE_HEAD_EMAIL;
     smtp_send_mail($to, $subject, $message);
