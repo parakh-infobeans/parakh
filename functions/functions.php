@@ -108,7 +108,11 @@ function notifyAwardOne($data)
 function notifyCopyAwardOne($data)
 {
     $request_status = ($data['rating']==='1')? 'approved' : 'declined';
-    $work_desc = $data['work_desc'];
+    if($data['work_desc'] == ''){
+      $work_desc = $data['comment'];
+    }else{
+      $work_desc = $data['work_desc'];
+    }
     $rating = ($request_status == 'approved') ? '+1' : '-1';
     $userObj= new rating();
     $lead_name = $userObj->get_user_full_name($_SESSION['userinfo']->id);
@@ -125,9 +129,7 @@ function notifyCopyAwardOne($data)
     }    
     $message.= NEWLINE;
     $message.= EMAIL_FOOTER;
-    $to['email'] = TEST_COPY_EMAIL;
-    if(ENVIRONMENT=='LIVE')
-        $to['email']=PRACTICE_HEAD_EMAIL;
+    $to['email']=PRACTICE_HEAD_EMAIL;
     smtp_send_mail($to, $subject, $message);
 }
 
@@ -151,6 +153,11 @@ function notifyRequestStatus($data, $status)
     if(ENVIRONMENT!= 'LIVE')
         $to['email']=TM_EMAIL;
     smtp_send_mail($to, $subject, $message);
+    
+    /* This will send the copy of eamil to practise head whenever the team lead approves the request of team member */
+    if($status == 'approve'){
+      notifyCopyAwardOne($data);
+    }
 }
 
 
