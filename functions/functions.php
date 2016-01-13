@@ -121,7 +121,7 @@ function notifyCopyAwardOne($data)
     $team_member_name=explode(" ", trim($team_member_name));
     $team_member_name=$team_member_name[0];
     $subject = 'Parakh - New rating alert';
-    if($work_desc != ''){
+    if(trim($work_desc) != ''){
       $message.= $team_member_name.' has received a '.$rating.' rating by '.$lead_name.' for "'.$work_desc.'".'.NEWLINE;
     }else{
       $work_desc = 'N/A';
