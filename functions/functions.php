@@ -100,6 +100,37 @@ function notifyAwardOne($data)
     if(ENVIRONMENT!='LIVE')
         $to['email']=TM_EMAIL;
     smtp_send_mail($to, $subject, $message);
+    
+    /* This will send the copy of eamil to practise head whenever the team member is rated +1 or -1 */
+    notifyCopyAwardOne($data);
+}
+
+function notifyCopyAwardOne($data)
+{
+    $request_status = ($data['rating']==='1')? 'approved' : 'declined';
+    if($data['work_desc'] == ''){
+      $work_desc = $data['comment'];
+    }else{
+      $work_desc = $data['work_desc'];
+    }
+    $rating = ($request_status == 'approved') ? '+1' : '-1';
+    $userObj= new rating();
+    $lead_name = $userObj->get_user_full_name($_SESSION['userinfo']->id);
+    $team_member_name=$userObj->get_user_full_name($data['user_id']);
+    $to['name']=$team_member_name;
+    $team_member_name=explode(" ", trim($team_member_name));
+    $team_member_name=$team_member_name[0];
+    $subject = 'Parakh - New rating alert';
+    if(trim($work_desc) != ''){
+      $message.= $team_member_name.' has received a '.$rating.' rating by '.$lead_name.' for "'.$work_desc.'".'.NEWLINE;
+    }else{
+      $work_desc = 'N/A';
+      $message.= $team_member_name.' has received a '.$rating.' rating by '.$lead_name.' for "'.$work_desc.'".'.NEWLINE;
+    }    
+    $message.= NEWLINE;
+    $message.= EMAIL_FOOTER;
+    $to['email']=PRACTICE_HEAD_EMAIL;
+    smtp_send_mail($to, $subject, $message);
 }
 
 function notifyRequestStatus($data, $status)
@@ -122,6 +153,11 @@ function notifyRequestStatus($data, $status)
     if(ENVIRONMENT!= 'LIVE')
         $to['email']=TM_EMAIL;
     smtp_send_mail($to, $subject, $message);
+    
+    /* This will send the copy of eamil to practise head whenever the team lead approves the request of team member */
+    if($status == 'approve'){
+      notifyCopyAwardOne($data);
+    }
 }
 
 
