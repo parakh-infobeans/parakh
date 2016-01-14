@@ -118,8 +118,8 @@ function notifyCopyAwardOne($data)
     $lead_name = $userObj->get_user_full_name($_SESSION['userinfo']->id);
     $team_member_name=$userObj->get_user_full_name($data['user_id']);
     $to['name']=$team_member_name;
-    $team_member_name=explode(" ", trim($team_member_name));
-    $team_member_name=$team_member_name[0];
+    //$team_member_name=explode(" ", trim($team_member_name));
+    //$team_member_name=$team_member_name[0];
     $subject = 'Parakh - New rating alert';
     if(trim($work_desc) != ''){
       $message.= $team_member_name.' has received a '.$rating.' rating by '.$lead_name.' for "'.$work_desc.'".'.NEWLINE;
