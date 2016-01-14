@@ -153,12 +153,13 @@ function notifyRequestStatus($data, $status)
     $message.= NEWLINE;
     $message.= EMAIL_FOOTER;
     $to['email'] = $userObj->get_user_email($data['team_member']);
+    $lead_email = $userObj->get_user_email($data['user_id']);
     if(ENVIRONMENT!= 'LIVE')
         $to['email']=TM_EMAIL;
     smtp_send_mail($to, $subject, $message);
     
     /* This will send the copy of eamil to practise head whenever the team lead approves the request of team member */
-    if($status == 'approve'){
+    if(($status == 'approve') && ($to['email'] != PRACTICE_HEAD_EMAIL && $lead_email != PRACTICE_HEAD_EMAIL)){
       notifyCopyAwardOne($data);
     }
 }
