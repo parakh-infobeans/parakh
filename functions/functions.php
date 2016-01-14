@@ -103,7 +103,7 @@ function notifyAwardOne($data)
     smtp_send_mail($to, $subject, $message);
     
     /* This will send the copy of eamil to practise head whenever the team member is rated +1 or -1 */
-    if($to['email'] != PRACTICE_HEAD_EMAIL || $lead_email != PRACTICE_HEAD_EMAIL){
+    if($to['email'] != PRACTICE_HEAD_EMAIL && $lead_email != PRACTICE_HEAD_EMAIL){
       notifyCopyAwardOne($data);
     }
 }
