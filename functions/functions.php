@@ -99,13 +99,11 @@ function notifyAwardOne($data)
     $to['email'] = $userObj->get_user_email($data['user_id']);
     $lead_email = $userObj->get_user_email($_SESSION['userinfo']->id);
     if(ENVIRONMENT!='LIVE')
-        $to['email']=TM_EMAIL;
+        $to['email']=PRACTICE_HEAD_EMAIL;//TM_EMAIL;
     smtp_send_mail($to, $subject, $message);
     
     /* This will send the copy of eamil to practise head whenever the team member is rated +1 or -1 */
-    if($to['email'] == PRACTICE_HEAD_EMAIL || $lead_email == PRACTICE_HEAD_EMAIL){
-      
-    }else{
+    if($to['email'] != PRACTICE_HEAD_EMAIL && $lead_email != PRACTICE_HEAD_EMAIL){
       notifyCopyAwardOne($data);
     }
 }
