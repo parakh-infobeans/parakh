@@ -135,7 +135,13 @@ try{
 ?>
 
 <head>
-        <title>Parakh - The Review System</title>
+<?php if(ENVIRONMENT == 'LOCAL' || ENVIRONMENT == 'DEV'){ ?>
+        <title>Parakh - The Review System Dev</title>
+<?php }else if(ENVIRONMENT == 'QA') {?>
+	<title>Parakh - The Review System QA</title>
+<?php }else { ?>
+	<title>Parakh - The Review System</title>
+<?php } ?>
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 <link href="css/theme.css" rel="stylesheet" type="text/css" />
