@@ -97,6 +97,7 @@ function notifyAwardOne($data)
     $message.= NEWLINE;
     $message.= EMAIL_FOOTER;
     $to['email'] = $userObj->get_user_email($data['user_id']);
+    $lead_email = $userObj->get_user_email($_SESSION['userinfo']->id);
     if(ENVIRONMENT!='LIVE')
         $to['email']=TM_EMAIL;
     smtp_send_mail($to, $subject, $message);
@@ -118,8 +119,8 @@ function notifyCopyAwardOne($data)
     $lead_name = $userObj->get_user_full_name($_SESSION['userinfo']->id);
     $team_member_name=$userObj->get_user_full_name($data['user_id']);
     $to['name']=$team_member_name;
-    $team_member_name=explode(" ", trim($team_member_name));
-    $team_member_name=$team_member_name[0];
+    //$team_member_name=explode(" ", trim($team_member_name));
+    //$team_member_name=$team_member_name[0];
     $subject = 'Parakh - New rating alert';
     if(trim($work_desc) != ''){
       $message.= $team_member_name.' has received a '.$rating.' rating by '.$lead_name.' for "'.$work_desc.'".'.NEWLINE;
@@ -150,6 +151,7 @@ function notifyRequestStatus($data, $status)
     $message.= NEWLINE;
     $message.= EMAIL_FOOTER;
     $to['email'] = $userObj->get_user_email($data['team_member']);
+    $lead_email = $userObj->get_user_email($data['user_id']);
     if(ENVIRONMENT!= 'LIVE')
         $to['email']=TM_EMAIL;
     smtp_send_mail($to, $subject, $message);
