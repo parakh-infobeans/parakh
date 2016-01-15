@@ -103,9 +103,7 @@ function notifyAwardOne($data)
     smtp_send_mail($to, $subject, $message);
     
     /* This will send the copy of eamil to practise head whenever the team member is rated +1 or -1 */
-    if($to['email'] != PRACTICE_HEAD_EMAIL && $lead_email != PRACTICE_HEAD_EMAIL){
-      notifyCopyAwardOne($data);
-    }
+    notifyCopyAwardOne($data);
 }
 
 function notifyCopyAwardOne($data)
@@ -159,7 +157,7 @@ function notifyRequestStatus($data, $status)
     smtp_send_mail($to, $subject, $message);
     
     /* This will send the copy of eamil to practise head whenever the team lead approves the request of team member */
-    if(($status == 'approve') && ($to['email'] != PRACTICE_HEAD_EMAIL && $lead_email != PRACTICE_HEAD_EMAIL)){
+    if($status == 'approve'){
       notifyCopyAwardOne($data);
     }
 }
