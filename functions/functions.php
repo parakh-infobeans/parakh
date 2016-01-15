@@ -158,6 +158,7 @@ function notifyRequestStatus($data, $status)
     
     /* This will send the copy of eamil to practise head whenever the team lead approves the request of team member */
     if($status == 'approve'){
+      $data['user_id'] = $data['team_member'];
       notifyCopyAwardOne($data);
     }
 }

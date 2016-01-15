@@ -6,8 +6,7 @@
     $page_number = (int) (!isset($_GET['page']) ? 1 : $_GET['page']);
     $user_id = ($_SESSION['userinfo']->id != '' ? $_SESSION['userinfo']->id : 0);
     $team_member = $renderObj->get_all_sub_employee_list($user_id);
-    $team_member_count = $renderObj->get_all_sub_employee_count($user_id);
-    $cnt_team_member = count($team_member_count);
+    $cnt_team_member = count($team_member);
     $chars = $renderObj->get_user_characters($employeeList);
     require_once 'header.php';
     ?>
