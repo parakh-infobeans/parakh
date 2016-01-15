@@ -1723,21 +1723,4 @@ class rating {
         }
         return $row;
     }
-    
-    function get_all_sub_employee_count($login_user_id) {
-
-        global $employeeList;
-        $dbh = $this->get_connection();
-        if ($dbh) {
-
-            $query = 'SELECT  uh.user_id,u.google_name FROM user_hierarchy uh left join users u on u.id = uh.user_id ' .
-                    'WHERE manager_id = :id  AND u.status <> 0 group by user_id';
-
-            $user_data = $dbh->prepare($query);
-            $user_data->execute(array(':id' => $login_user_id));
-	    $row = $user_data->fetchAll();
-	}
-        return $row;
-    }
-
 }
