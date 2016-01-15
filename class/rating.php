@@ -1561,14 +1561,14 @@ class rating {
 
             $user_data = $dbh->prepare($query);
             $user_data->execute(array(':id' => $login_user_id));
-	    $employeeList = $user_data->fetchAll();
-            /*while ($row = $user_data->fetch((PDO::FETCH_ASSOC))) {
+
+            while ($row = $user_data->fetch((PDO::FETCH_ASSOC))) {
 
                 $membresInfo = array();
                 $membresInfo = array('user_id' => $row['user_id'], 'user_name' => $row['google_name']);
                 $employeeList[] = $membresInfo;
                 $this->get_all_sub_employee_list($row['user_id']);
-            }*/
+            }
         }
         return $employeeList;
     }
