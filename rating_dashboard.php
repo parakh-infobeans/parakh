@@ -6,7 +6,15 @@
     $page_number = (int) (!isset($_GET['page']) ? 1 : $_GET['page']);
     $user_id = ($_SESSION['userinfo']->id != '' ? $_SESSION['userinfo']->id : 0);
     $team_member = $renderObj->get_all_sub_employee_list($user_id);
-    $cnt_team_member = count($team_member);
+    /* Changes made to correct the count on My team member page start*/
+    $team_member_count_array = array();
+    foreach($team_member as $team_member_count){
+      if(!in_array($team_member_count['user_id'],$team_member_count_array)){
+	$team_member_count_array[] = $team_member_count['user_id'];
+      }
+    }
+    /* Changes made to correct the count on My team member page end*/
+    $cnt_team_member = count($team_member_count_array);
     $chars = $renderObj->get_user_characters($employeeList);
     require_once 'header.php';
     ?>
