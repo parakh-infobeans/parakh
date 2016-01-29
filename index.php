@@ -193,8 +193,8 @@ $(window).load(function(){autoScroller('vmarquee')});
 		<a href="<?php echo $authUrl; ?>"><img onclick="header.location:<?php echo $authUrl; ?>" src="images/sign-in-with-google.png" /></a>
 	
 	<div class="link-wrapper">
-	<h4>News & Announcement</h4>
-	<div class="autoScroller-container" style="height:160px;overflow:auto">
+	<h4><u>News & Announcements</u></h4>
+	<div class="autoScroller-container" style="height:140px;overflow:auto">
 	<div id="vmarquee">
 	<ul id="sub-link">
 	<?php
