@@ -118,7 +118,7 @@ function notifyCopyAwardOne($data)
     $userObj= new rating();
     $lead_name = $userObj->get_user_full_name($_SESSION['userinfo']->id);
     $team_member_name=$userObj->get_user_full_name($data['user_id']);
-    $to['name']=$team_member_name;
+    $to['name']='Abhinav Shrivastava';
     //$team_member_name=explode(" ", trim($team_member_name));
     //$team_member_name=$team_member_name[0];
     $subject = 'Parakh - New rating alert';
@@ -130,6 +130,16 @@ function notifyCopyAwardOne($data)
     }    
     $message.= NEWLINE;
     $message.= EMAIL_FOOTER;
+    /* Code to send mail to multiple email start*/ 
+//     $contacts = array(
+//     "parekh.manager@gmail.com",
+//     //....as many email address as you need
+//     );
+//     foreach($contacts as $contact) {
+//     $to['email']      =  $contact;
+//     smtp_send_mail($to, $subject, $message);
+//     }
+    /* Code to send mail to multiple email end*/
     $to['email']=PRACTICE_HEAD_EMAIL;
     smtp_send_mail($to, $subject, $message);
 }
