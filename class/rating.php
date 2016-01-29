@@ -78,7 +78,14 @@ class rating {
     const TAB_RATING_SHOW_RATING = "show_rating";
     const ADMIN_LOGIN_EMAILID = "fatima.sayed@infobeans.com";
     const ADMIN_LOGIN_PASSWORD = "12345";
-
+    /***** User Log ******************/
+    const TAB_USER_LOG = "user_log";
+    const COL_USER_LOG_ID = "id";
+    const COL_USER_LOG_USERID = "user_id";
+    const COL_USER_LOG_LOGINDATETIME = "login_datetime";
+    const COL_USER_LOG_LOGOUTDATETIME = "logout_datetime";
+    /***** User Log ******************/
+    
     function get_connection() {
         try {
             $dbh = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->dbname, $this->user, $this->pass, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
@@ -1713,14 +1720,27 @@ class rating {
         return $row;
     }
     
-    function get_user_total_rating_count($user_id){
+    function login_log($user_id){
+	$today = date('Y-m-d H:m:s');
         $dbh = $this->get_connection();
         if ($dbh) {
-            $query = "SELECT count(user_id) as pluscount FROM " . self::TAB_RATING . " AS r  WHERE r.user_id = :id AND r.rating <> 0";
-            $ranking_data = $dbh->prepare($query);
-            $ranking_data->execute(array(':id' => $user_id));
-            $row = $ranking_data->fetch((PDO::FETCH_ASSOC));
+            $user_log_query = "INSERT INTO  " . self::TAB_USER_LOG . " (" . self::COL_USER_LOG_USERID . ", " . self::COL_USER_LOG_LOGINDATETIME . ", " . self::COL_USER_LOG_LOGOUTDATETIME . ")
+                     VALUES(:user_id,:login_datetime,:logout_datetime)";
+            $user_log_data = $dbh->prepare($user_log_query);
+            $user_log_data->execute(array(':user_id' => $user_id,':login_datetime' => $today,':logout_datetime' => ''));
+            $request_last_insert = $dbh->lastInsertId();
         }
-        return $row;
+        return $request_last_insert;
+    }
+    
+    function logut_log($log_id){
+    
+	$today = date('Y-m-d H:m:s');
+        $dbh = $this->get_connection();
+        if ($dbh) {
+            $user_log_query = "UPDATE " . self::TAB_USER_LOG . " SET " . self::COL_USER_LOG_LOGOUTDATETIME . " = '".$today."' where ".self::COL_USER_LOG_ID." = ".$log_id;
+            $user_log_data = $dbh->prepare($user_log_query);
+            $user_log_data->execute();
+        }
     }
 }

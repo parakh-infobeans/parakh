@@ -1899,3 +1899,39 @@ a.a-down:hover{
 	background-color:#559800 !important;
 }
 /********* Ranking css end ************/
+
+/********* RSS Feed CSS Start *********/
+.link-wrapper {
+	    border: 1px solid #777;
+	    height: 250px;
+	    margin: 0 2%;
+	    max-height: 180px;
+	    padding: 10px;
+	}
+	.link-wrapper h4 {
+	padding: 5px;
+	}
+	#sub-link {
+		margin: 5px 20px;
+		padding: 0; 
+	}
+	#sub-link li {
+		width: 240px;
+	}
+		#sub-link li a:hover {
+		text-decoration: underline;
+	}
+/*	#sub-link a::before {
+	    content: "*";
+	    font-size: 20px;
+	    margin-right: 10px;
+	    vertical-align: middle;
+	}*/
+	#sub-link a, #sub-link a:visited {
+		display: block;
+		padding: 2px 2px 2px 5px;
+		color: #000;
+		text-decoration: none;
+		margin-bottom: 5px;
+	}
+/********* RSS Feed CSS End *********/

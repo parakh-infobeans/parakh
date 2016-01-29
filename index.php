@@ -3,6 +3,9 @@ header("Cache-Control: no-cache, must-revalidate");
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 
 require_once 'config.php';
+require_once 'class/rating.php';
+require_once 'class/autoloader.php';
+
 //session_start();
 ########## Google Settings.. Client ID, Client Secret from https://cloud.google.com/console #############
 $google_client_id 		= '214742262594-2n34ftoirg8g0fa0v7069c9o4aan1af3.apps.googleusercontent.com';
@@ -27,8 +30,11 @@ $set_page_title = 'Login';
 //If user wish to log out, we just unset Session variable
 if (isset($_REQUEST['reset'])) 
 {
+  $renderObj = new rating();
+  $last_inser_id = $renderObj->logut_log($_SESSION['log_id']);
   unset($_SESSION['token']);
   unset($_SESSION['userinfo']);
+  unset($_SESSION['log_id']);
   $gClient->revokeToken();
   session_destroy();
   header('Location: ' . filter_var($google_redirect_url, FILTER_SANITIZE_URL)); //redirect user back to page
@@ -72,11 +78,14 @@ try{
             }
             //compare user id in our database
             $user_exist = $conn->query("SELECT * FROM users WHERE google_id=$user_id OR google_email = '$email'")->fetch_object(); 
-
+	    
             if($user_exist)
             {
               if($user_exist->status == '1') {
+              $renderObj = new rating();
+              $last_inser_id = $renderObj->login_log($user_exist->id);
               $_SESSION['userinfo']= $user_exist;
+              $_SESSION['log_id']= $last_inser_id;
               $user_id_primary = $user_exist->id;
               $update_profile_info = $conn->query("UPDATE users SET google_id=$user_id,google_picture_link='$profile_image_url' WHERE id=$user_id_primary");
                 if($user_exist->role_id != 9){
@@ -91,6 +100,7 @@ try{
               else {
                   unset($_SESSION['token']);
                   unset($_SESSION['userinfo']);
+                  unset($_SESSION['log_id']);
                   header('Location: index.php?chk=9');
               }
               //echo "innnn";die;
@@ -104,7 +114,10 @@ try{
                     if($user_exist)
                     {
                       if($user_exist->status == '1') {
+			$renderObj = new rating();
+			$last_inser_id = $renderObj->login_log($user_exist->id);
                         $_SESSION['userinfo']= $user_exist;
+                        $_SESSION['log_id']= $last_inser_id;
                         if($user_exist->role_id != 9){
                           header('Location: rating_dashboard.php');
                         }else{
@@ -114,6 +127,7 @@ try{
                       else {
                           unset($_SESSION['token']);
                           unset($_SESSION['userinfo']);
+                          unset($_SESSION['log_id']);
                           header('Location: index.php?chk=9');
                       }
                     }
@@ -146,7 +160,10 @@ try{
 <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 <link href="css/theme.css" rel="stylesheet" type="text/css" />
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css' />
-<script type="text/javascript" src="js/jquery-1.2.6.min.js"></script>
+<!--<script type="text/javascript" src="js/jquery-1.2.6.min.js"></script>-->
+<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="js/jquery.timers.js"></script>
+<script type="text/javascript" src="js/jquery.autoScroller.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 	$('.action-acc-innner').click(function(){
@@ -163,6 +180,10 @@ $(document).ready(function(){
 	});
 });
 </script>
+
+<script type="text/javascript">
+$(window).load(function(){autoScroller('vmarquee')});
+</script>
 </head>
 <body class="body-bg">
 	<div class=""><img src="images/login-logo.png"></div>
@@ -170,8 +191,30 @@ $(document).ready(function(){
 <div class="login-btn">
 
 		<a href="<?php echo $authUrl; ?>"><img onclick="header.location:<?php echo $authUrl; ?>" src="images/sign-in-with-google.png" /></a>
-	</div>
+	
+	<div class="link-wrapper">
+	<h4>News & Announcement</h4>
+	<div class="autoScroller-container" style="height:160px;overflow:auto">
+	<div id="vmarquee">
+	<ul id="sub-link">
+	<?php
+	  $url = 'https://sites.google.com/a/infobeans.com/theinformant/announcements/posts.xml';
+	  $feed = new SimplePie();
+	  $feed->set_feed_url($url);	  
+	  $feed->init();
+	  foreach ($feed->get_items() as $item){
+	  ?>
+	  
+	  <li><a href="<?php echo $item->get_link(); ?>" target="_blank"><?php echo $item->get_title();?></a></li>
+	  <?php } ?>
+	  
+	  </ul>
+	  </div>
+	  </div>
 
+	</div>
+	</div>
+	
 </body>
 </html>
 
