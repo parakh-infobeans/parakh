@@ -1,7 +1,7 @@
 function autoScroller(contentDiv, speed)
 {
     contentDiv = "#"+contentDiv;
-    var scrollSpeed = (speed==null) ? 5 : parseInt(speed);
+    var scrollSpeed = (speed==null) ? 2 : parseInt(speed);
     
     // double make sure the autoScroller-container has the correct css position and overflow property
     $(contentDiv).parent().css({position:'relative',overflow:'hidden'});
