@@ -9,6 +9,8 @@
        $renderObj = new rating();
        $status = $renderObj->admin_login($email,$password);
        if(isset($_SESSION['userinfo']) && ($_SESSION['userinfo']->role_id == 8)) {
+            $last_inser_id = $renderObj->login_log($_SESSION['userinfo']->id);
+            $_SESSION['log_id']= $last_inser_id;
             header('Location: user_list_page.php');
         } else {
             header('Location: admin.php?err=1');

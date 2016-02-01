@@ -1721,7 +1721,7 @@ class rating {
     }
     
     function login_log($user_id){
-	$today = date('Y-m-d H:m:s');
+	$today = date('Y-m-d H:i:s');
         $dbh = $this->get_connection();
         if ($dbh) {
             $user_log_query = "INSERT INTO  " . self::TAB_USER_LOG . " (" . self::COL_USER_LOG_USERID . ", " . self::COL_USER_LOG_LOGINDATETIME . ", " . self::COL_USER_LOG_LOGOUTDATETIME . ")
@@ -1735,7 +1735,7 @@ class rating {
     
     function logut_log($log_id){
     
-	$today = date('Y-m-d H:m:s');
+	$today = date('Y-m-d H:i:s');
         $dbh = $this->get_connection();
         if ($dbh) {
             $user_log_query = "UPDATE " . self::TAB_USER_LOG . " SET " . self::COL_USER_LOG_LOGOUTDATETIME . " = '".$today."' where ".self::COL_USER_LOG_ID." = ".$log_id;
