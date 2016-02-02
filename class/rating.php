@@ -1720,6 +1720,17 @@ class rating {
         return $row;
     }
     
+     function get_user_total_rating_count($user_id){
+        $dbh = $this->get_connection();
+        if ($dbh) {
+            $query = "SELECT count(user_id) as pluscount FROM " . self::TAB_RATING . " AS r  WHERE r.user_id = :id AND r.rating <> 0";
+            $ranking_data = $dbh->prepare($query);
+            $ranking_data->execute(array(':id' => $user_id));
+            $row = $ranking_data->fetch((PDO::FETCH_ASSOC));
+        }
+        return $row;
+    }
+    
     function login_log($user_id){
 	$today = date('Y-m-d H:i:s');
         $dbh = $this->get_connection();
