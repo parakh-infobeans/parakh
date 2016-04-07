@@ -1935,3 +1935,13 @@ a.a-down:hover{
 		margin-bottom: 5px;
 	}
 /********* RSS Feed CSS End *********/
+
+.action-accordian-new {
+    background-color: #c6c6c6;
+    height: 32px;
+    left: 0;
+    padding-top: 20px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}

@@ -15,6 +15,9 @@
             $("#content-2").mCustomScrollbar({
                 theme: "minimal"
             });
+            $("#content-3").mCustomScrollbar({
+                theme: "minimal"
+            });
 
         });
     })(jQuery);
