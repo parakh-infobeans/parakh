@@ -4,6 +4,15 @@ require_once 'class/rating.php';
 require_once 'functions/functions.php';
 $ratingObj = new rating();
 
+
+//     if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'){
+//       $record = $ratingObj->edit_comment($_POST);
+//       if($record){
+// 	  $get_work_rating = $ratingObj->get_work_rating($user_id);
+// 	  return $get_work_rating;
+//         }
+//     }
+
 if(!empty($_REQUEST['pk']))
 {
     $edit_status= $ratingObj->edit_comment($_REQUEST);

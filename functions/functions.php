@@ -106,6 +106,61 @@ function notifyAwardOne($data)
     notifyCopyAwardOne($data);
 }
 
+function notifyFeedback($data)
+{
+    //$request_status = ($data['rating']==='1')? 'approved' : 'declined';
+    //$rating = ($request_status == 'approved') ? '+1' : '-1';
+    $userObj= new rating();
+    $lead_name = $userObj->get_user_full_name($_SESSION['userinfo']->id);
+    $team_member_name=$userObj->get_user_full_name($data['user_id']);
+    $to['name']=$team_member_name;
+    $team_member_name=explode(" ", trim($team_member_name));
+    $team_member_name=$team_member_name[0];
+    $subject = 'Parakh - A feedback for you';
+    $message = 'Dear '.$team_member_name.','.NEWLINE;
+    $message.= 'You have received a feedback from '.$lead_name.'.'.NEWLINE." Login to <a href='".SITE_URL."'>".SITE_NAME.'</a> to view details.'.NEWLINE;
+    $message.= NEWLINE;
+    $message.= EMAIL_FOOTER;
+    $to['email'] = $userObj->get_user_email($data['user_id']);
+    $lead_email = $userObj->get_user_email($_SESSION['userinfo']->id);
+    if(ENVIRONMENT!='LIVE')
+        $to['email']=TM_EMAIL;
+    smtp_send_mail($to, $subject, $message);
+    
+    /* This will send the copy of eamil to practise head whenever the team member is rated +1 or -1 */
+    notifyCopyFeedback($data);
+}
+
+function notifyCopyFeedback($data)
+{
+    //$request_status = ($data['rating']==='1')? 'approved' : 'declined';
+    $work_desc = $data['desc'];
+    
+    //$rating = ($request_status == 'approved') ? '+1' : '-1';
+    $userObj= new rating();
+    $lead_name = $userObj->get_user_full_name($_SESSION['userinfo']->id);
+    $team_member_name=$userObj->get_user_full_name($data['user_id']);
+    $to['name']='Abhinav Shrivastava';
+    //$team_member_name=explode(" ", trim($team_member_name));
+    //$team_member_name=$team_member_name[0];
+    $subject = 'Parakh - Feedback notification';
+    $message.= $team_member_name.' has received a feedback by '.$lead_name.' for "'.$work_desc.'".'.NEWLINE;
+    $message.= NEWLINE;
+    $message.= EMAIL_FOOTER;
+    /* Code to send mail to multiple email start*/ 
+//     $contacts = array(
+//     "parekh.manager@gmail.com",
+//     //....as many email address as you need
+//     );
+//     foreach($contacts as $contact) {
+//     $to['email']      =  $contact;
+//     smtp_send_mail($to, $subject, $message);
+//     }
+    /* Code to send mail to multiple email end*/
+    $to['email']=PRACTICE_HEAD_EMAIL;
+    smtp_send_mail($to, $subject, $message);
+}
+
 function notifyCopyAwardOne($data)
 {
     $request_status = ($data['rating']==='1')? 'approved' : 'declined';

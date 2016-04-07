@@ -85,6 +85,15 @@ class rating {
     const COL_USER_LOG_LOGINDATETIME = "login_datetime";
     const COL_USER_LOG_LOGOUTDATETIME = "logout_datetime";
     /***** User Log ******************/
+    /******* Feedback ***************/
+    const TAB_FEEDBACK = "feedback";
+    const TAB_FEEDBACK_FROM = "feedback_from";
+    const TAB_FEEDBACK_TO = "feedback_to";
+    const TAB_FEEDBACK_RESPONSE_PARENT = "response_parent";
+    const TAB_FEEDBACK_DESCRIPTION = "feedback_description";
+    const TAB_FEEDBACK_CREATED_DATE = "created_date";
+    const TAB_FEEDBACK_MODIFIED_DATE = "modified_date";
+    /******* Feedback ***************/
     
     function get_connection() {
         try {
@@ -685,14 +694,20 @@ class rating {
     }
 
     function edit_comment($data) {
+    
         $dbh = $this->get_connection();
         if ($dbh) {
-            $rating_record = $this->get_rating_detail($data['pk'], true);
+	    if(empty($data['pk'])){
+	      $data['pk'] = $data['rating_id'] ;
+	      $data['value'] = $data['desc'];
+	    }
+	    $rating_record = $this->get_rating_detail($data['pk'], true);
 
-            $sql = "Update " . self::TAB_WORK . " SET  "
+	    $sql = "Update " . self::TAB_WORK . " SET  "
                     . "description = '" . $data['value'] . "', "
                     . "modified_date = '" . date('Y-m-d H:m:s') . "'"
                     . " WHERE id = '" . $rating_record['work_id'] . "'";
+             
             $query = $dbh->prepare($sql);
             $comment_data = $query->execute();
 
@@ -978,6 +993,9 @@ class rating {
         if ($dbh) {
             $cnd = '';
             $tms = '';
+            $currentDate = date('Y-m-d');
+            $finalDate = date('Y-m-d', strtotime("-90 days",strtotime($currentDate)));
+                        
             if (is_array($all_data) && !empty($all_data)) {
                 foreach ($all_data as $key => $value)
                     $tms .= $value['user_id'] . ",";
@@ -1000,7 +1018,11 @@ class rating {
                         $unique_array[$users['id']] = $users;
                     }
                     $selected_tms = substr($selected_tms, 0, -1);
-                    $query = "select rating.user_id,SUM(case when rating.rating =1 then 1 else 0 end) as rating_plus,
+//                     $query = "select rating.user_id,SUM(case when rating.rating =1 then 1 else 0 end) as rating_plus,
+//                                                         SUM(case when rating.rating =0 then 1 else 0 end) as rating_minus,
+//                                                         SUM(case when rating.rating =2 then 1 else 0 end) as rating_none
+//                                                         from rating as rating where rating.modified_date >= '".$finalDate."' AND rating.user_id in (" . $selected_tms . ") group by rating.user_id ";
+		    $query = "select rating.user_id,SUM(case when rating.rating =1 then 1 else 0 end) as rating_plus,
                                                         SUM(case when rating.rating =0 then 1 else 0 end) as rating_minus,
                                                         SUM(case when rating.rating =2 then 1 else 0 end) as rating_none
                                                         from rating as rating where rating.user_id in (" . $selected_tms . ") group by rating.user_id ";
@@ -1752,6 +1774,76 @@ class rating {
             $user_log_query = "UPDATE " . self::TAB_USER_LOG . " SET " . self::COL_USER_LOG_LOGOUTDATETIME . " = '".$today."' where ".self::COL_USER_LOG_ID." = ".$log_id;
             $user_log_data = $dbh->prepare($user_log_query);
             $user_log_data->execute();
+        }
+    }
+    
+    function saveFeedback($data) {
+    
+        //$data['work_title'] = "System generated";
+        $data['feedback_desc'] = $data['desc'];
+        $dbh = $this->get_connection();
+        if ($dbh) {
+            $dateTime = new \DateTime();
+            $created_date = $modified_date = $dateTime->format("Y-m-d H:i:s");
+            $login_user_id = $_SESSION['userinfo']->id;
+
+            $feedback_insert_query = "INSERT INTO " . self::TAB_FEEDBACK . "(" . self::TAB_FEEDBACK_TO . ", " . self::TAB_FEEDBACK_DESCRIPTION . ", " . self::TAB_FEEDBACK_FROM . ", " . self::TAB_FEEDBACK_CREATED_DATE . ", " . self::TAB_FEEDBACK_MODIFIED_DATE . ")
+                                                                VALUES(:feedback_to,:feedback_description,:feedback_from,:created_date,:modified_date)";
+            $feedback_insert = $dbh->prepare($feedback_insert_query);
+            $feedback_insert->execute(array(':feedback_to' => $data['user_id'],
+                //':work_title' => $data['work_title'],
+                ':feedback_description' => $data['feedback_desc'],
+                ':feedback_from' => $login_user_id,
+                //':request_for' => $data['rating'],
+                ':created_date' => $created_date,
+                ':modified_date' => $modified_date,
+                ));
+             if (isset($data['action']) && ($data['action'] == 'btn_click'))
+                 notifyFeedback($data);
+            return true;
+        }
+    }
+    
+    function get_feedback($user_id) {
+        $dbh = $this->get_connection();
+        if ($dbh) {
+            $query = "SELECT feedback.feedback_from as feedback_from,feedback.id as id,feedback.feedback_description as description,feedback.created_date as created_date,user.google_name as given_by_name"
+                    . " FROM " . self::TAB_FEEDBACK . " AS feedback  
+                    LEFT JOIN " . self::TAB_USER . " AS user ON user.id = feedback.feedback_from
+                    WHERE feedback.feedback_to= :user_id  ORDER BY feedback.created_date desc ";
+                    
+            $user_list = $dbh->prepare($query);
+            $user_list->execute(array(':user_id' => $user_id));
+            $row = $user_list->fetchAll((PDO::FETCH_ASSOC));
+            return $row;
+        }
+    }
+    
+    function feedbackResponseSave($data) {
+    
+        
+        $data['feedback_desc'] = $data['desc'];
+        $dbh = $this->get_connection();
+        if ($dbh) {
+            $dateTime = new \DateTime();
+            $created_date = $modified_date = $dateTime->format("Y-m-d H:i:s");
+            $login_user_id = $_SESSION['userinfo']->id;
+
+            $feedback_insert_query = "INSERT INTO " . self::TAB_FEEDBACK . "(" . self::TAB_FEEDBACK_TO . ", " . self::TAB_FEEDBACK_DESCRIPTION . ", " . self::TAB_FEEDBACK_FROM . ", ".self::TAB_FEEDBACK_RESPONSE_PARENT.", " . self::TAB_FEEDBACK_CREATED_DATE . ", " . self::TAB_FEEDBACK_MODIFIED_DATE . ")
+                                                                VALUES(:feedback_to,:feedback_description,:feedback_from,:response_parent,:created_date,:modified_date)";
+            echo  $feedback_insert_query;exit;                                                   
+            $feedback_insert = $dbh->prepare($feedback_insert_query);
+            $feedback_insert->execute(array(':feedback_to' => $data['feedback_to'],
+                //':work_title' => $data['work_title'],
+                ':feedback_description' => $data['feedback_desc'],
+                ':feedback_from' => $login_user_id,
+                ':response_parent' => $data['feedback_id'],
+                ':created_date' => $created_date,
+                ':modified_date' => $modified_date,
+                ));
+//              if (isset($data['action']) && ($data['action'] == 'btn_click'))
+//                  notifyFeedback($data);
+            return true;
         }
     }
 }
