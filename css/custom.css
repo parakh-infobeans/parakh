@@ -370,11 +370,24 @@ p.wrap-text {
 	    border-top: 1px solid #d8d8d8;
     }
 
-    .about-section h2 {
+    /*.about-section h2 {
 	    color: #333;
 	    margin: 20px 0;
 	    border-bottom: 1px solid #d8d8d8;
 	    padding-bottom: 5px;
+    }*/
+    
+    .about-section h2 {
+	background-color: #ff5959;
+	border-bottom: 1px solid #d8d8d8;
+	border-radius: 10px;
+	color: white;
+	height: 34px;
+	line-height: 33px;
+	margin: 20px 0;
+	padding-bottom: 5px;
+	text-align: center;
+	width: 989px;
     }
 
     .box-two {
