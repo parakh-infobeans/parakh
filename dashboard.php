@@ -373,14 +373,14 @@ $lead_list = $renderObj->get_all_lead($user_id);
 					<div class="lft-div-my-team marginbot10">
 					       <div class="div-team-lft-img" title="<?= date("F j, Y, g:i a",strtotime($value['created_date']));?>"><img src="<?= $value['for_picture']; ?>" width="50" height="50" /></div>
                                                <div class="div-team-lft-txt" title="<?= date("F j, Y, g:i a", strtotime($value['created_date'])); ?>">
-                                               <a href="javascript:void(0);" class="name" >Feedback given to <strong><?= $value['google_name'];  ?></strong></a>   
+                                               Feedback given to <a href="javascript:void(0);" class="name" ><strong><?= $value['google_name'];  ?></strong></a>   
                                                </div>
                                         </div>       
                                         <?php } else { ?>
                                         <div class="lft-div-my-team marginbot10">
 					       <div class="div-team-lft-img" title="<?= date("F j, Y, g:i a",strtotime($value['created_date']));?>"><img src="<?= $value['for_picture']; ?>" width="50" height="50" /></div>
                                                <div class="div-team-lft-txt" title="<?= date("F j, Y, g:i a", strtotime($value['created_date'])); ?>">
-                                               <a href="javascript:void(0);" class="name" >Feedback received from <strong><?= $value['ratedby'];  ?></strong></a>   
+                                               Feedback received from <a href="javascript:void(0);" class="name" ><strong><?= $value['ratedby'];  ?></strong></a>   
                                                </div>
                                          </div>      
                                         <?php } } ?>

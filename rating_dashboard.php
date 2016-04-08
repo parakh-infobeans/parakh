@@ -32,7 +32,7 @@
     <div class="succes-green" ><div class="close-alert"></div> <?php echo $errors[18]; ?></div>
     <div class="succes-green-feedback" ><div class="close-alert"></div> </div>
     <div id="allchars" class="link-block-all">
-        <a href="javascript:void(0);" id="charAll" class="link-all link-alphabet Alphas">All</a>
+        <a href="javascript:void(0);" id="charAll" class="link-all link-alphabet Alphas" title="Showing last 90 days result">All</a>
         <?php
         foreach ($chars as $character) {
             ?>
@@ -40,7 +40,7 @@
             <?php
         }
         ?>
-	<a href="javascript:void(0);" id="charshowAll" style="float:right;margin-right:80px;" class=" link-alphabet Alphas">Show All</a>
+	<a href="javascript:void(0);" id="charshowAll" style="float:right;margin-right:80px;" class=" link-alphabet Alphas" title="View all">Show All</a>
     </div>
     <div id="allchars" class="link-block-all"><a style="color:white;"> <strong style="color: white;padding-top: 0px;">Total Members : </strong> <?= $cnt_team_member; ?> </a></div>
     <div id="content_listing" class="mid-col-12" style="padding-top:4px">

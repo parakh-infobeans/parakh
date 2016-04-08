@@ -179,7 +179,7 @@
                         </div>
                     </div>
                     <div class="about-section" id="about">
-			<h2>Feedback</h2>
+			<h2>Feedback: an opportunity to improve</h2>
 		    <?php if(!empty($get_feedback)){ ?>
 		    <div class="profile-lft-row" style="width: 94%;">
 		    <div class="box-two">
