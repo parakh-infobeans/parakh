@@ -122,7 +122,13 @@ foreach (@$get_work_rating as $key => $val) {
 
 $allMemberList = $renderObj->get_all_group_team_members($user_id);
 
-$myActivityList = $renderObj->get_my_recent_activity($user_id);
+$myActivityListRating = $renderObj->get_my_recent_activity($user_id);
+
+$myActivityListFeedback = $renderObj->get_my_recent_activity_feedback($user_id);
+
+$myActivityList = array_merge($myActivityListRating, $myActivityListFeedback);
+$myActivityList = $renderObj->sort_date($myActivityList);
+
 
 $lead_list = $renderObj->get_all_lead($user_id);
 ?>
@@ -361,6 +367,24 @@ $lead_list = $renderObj->get_all_lead($user_id);
                                             <?php } ?>
                                             </div>
                                         <?php } ?>
+                                        <?php if(empty($value['rating'])){ ?>
+                                        
+					<?php	if ($value['user_id'] == $user_id) { ?>
+					<div class="lft-div-my-team marginbot10">
+					       <div class="div-team-lft-img" title="<?= date("F j, Y, g:i a",strtotime($value['created_date']));?>"><img src="<?= $value['for_picture']; ?>" width="50" height="50" /></div>
+                                               <div class="div-team-lft-txt" title="<?= date("F j, Y, g:i a", strtotime($value['created_date'])); ?>">
+                                               <a href="javascript:void(0);" class="name" >Feedback given to <strong><?= $value['google_name'];  ?></strong></a>   
+                                               </div>
+                                        </div>       
+                                        <?php } else { ?>
+                                        <div class="lft-div-my-team marginbot10">
+					       <div class="div-team-lft-img" title="<?= date("F j, Y, g:i a",strtotime($value['created_date']));?>"><img src="<?= $value['for_picture']; ?>" width="50" height="50" /></div>
+                                               <div class="div-team-lft-txt" title="<?= date("F j, Y, g:i a", strtotime($value['created_date'])); ?>">
+                                               <a href="javascript:void(0);" class="name" >Feedback received from <strong><?= $value['ratedby'];  ?></strong></a>   
+                                               </div>
+                                         </div>      
+                                        <?php } } ?>
+                                        
                                         <?php
                                     }
                                 } else {

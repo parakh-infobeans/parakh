@@ -30,6 +30,7 @@
         <?php }
     } ?>
     <div class="succes-green" ><div class="close-alert"></div> <?php echo $errors[18]; ?></div>
+    <div class="succes-green-feedback" ><div class="close-alert"></div> </div>
     <div id="allchars" class="link-block-all">
         <a href="javascript:void(0);" id="charAll" class="link-all link-alphabet Alphas">All</a>
         <?php
@@ -39,7 +40,7 @@
             <?php
         }
         ?>
-
+	<a href="javascript:void(0);" id="charshowAll" style="float:right;margin-right:80px;" class=" link-alphabet Alphas">Show All</a>
     </div>
     <div id="allchars" class="link-block-all"><a style="color:white;"> <strong style="color: white;padding-top: 0px;">Total Members : </strong> <?= $cnt_team_member; ?> </a></div>
     <div id="content_listing" class="mid-col-12" style="padding-top:4px">
@@ -51,6 +52,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $(".succes-green").hide();
+            $(".succes-green-feedback").hide();
             var alphaVal = $(".link-all").html();
 
             $.post("user_rating_dashboard.php", '', function (response) {
@@ -60,12 +62,33 @@
 
                 var alphaVal = this.text;
                 var data = "&alphaValue=" + alphaVal;
+                console.log(alphaVal);
                 $("#allchars a").removeClass("link-all");
                 $.post("user_rating_dashboard.php", data, function (response) {
-                    $("#char" + alphaVal).addClass("link-all");
+                    if(alphaVal == 'Show All'){
+		      $("#charshowAll").addClass("link-all");
+		    }else{
+		      $("#char" + alphaVal).addClass("link-all");
+                    }
                     $("#content_listing").html(response);
                 });
             });
         });
 
     </script>
+<style>
+.succes-green-feedback {
+    background-color: #1ab31a;
+    border-radius: 5px;
+    color: #fff;
+    height: auto;
+    margin: 10px 0;
+    padding: 10px 0;
+    position: relative;
+    text-align: center;
+    width: 92%;
+}
+.succes-green {
+    width: 92%;
+}
+</style>
