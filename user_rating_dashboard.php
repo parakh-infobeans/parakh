@@ -89,6 +89,9 @@
     <div id="ajaxBusy" class="ajaxLoader"><p><img id="imgAjaxLoader" class="ajaxLoaderImg" src="./images/loading.gif" /></p></div>
     <script type="text/javascript">
         $(document).ready(function () {
+	    
+	    $('.action-acc-parent-inner').hide();
+	    $('.action-acc-innner-arr').addClass('action-acc-innner-arr1');
             var button = '';
             $.ajaxSetup({
                 beforeSend: function () {
@@ -196,6 +199,7 @@
                     $.post("user_rating_dashboard.php", data, function (response) {
                         $("#content_listing").html(response);
                         $(".succes-green").show();
+                        $(".succes-green-feedback").hide();
                         $('.overlay').hide();
                     });
                 }
@@ -237,7 +241,11 @@
                     }
                     $.post("user_rating_dashboard.php", data, function (response) {
                         $("#content_listing").html(response);
-                        $(".succes-green").show();
+                        $(".succes-green-feedback").show();
+                        if(wchBtn == 'feedback'){
+ 			  $(".succes-green-feedback").html('<div class="close-alert" onclick="$(this).parent().hide();"></div>Feedback submitted successfully. <a target="_blank" style="text-decoration:none;color:white;border-bottom:1px dotted white;" href="/profile.php?id='+val[1]+'&edit_comment=true">Click here</a> to view.');
+                         }
+                        $(".succes-green").hide();
                         $('.overlay').hide();
                     });
                 }

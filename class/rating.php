@@ -1001,9 +1001,11 @@ class rating {
                     $tms .= $value['user_id'] . ",";
                 $tms = substr($tms, 0, -1);
                 $cnd .= " AND  a.id in (" . $tms . ") ";
-                if ($match_char != '')
-                    $cnd .= " AND  a.google_name like '" . $match_char . "%' ";
-
+                if ($match_char != ''){
+                    if($match_char != 'Show All'){
+		      $cnd .= " AND  a.google_name like '" . $match_char . "%' ";
+                    }
+		}
                 $query = "SELECT a.*,uh.manager_id FROM users a JOIN " . self::TAB_USER_HIERARCHY . " uh ON uh." . self::TAB_USER_HIERARCHY_id . " = a." . self::COL_TAB_USER_ID . " WHERE 1  " . $cnd;
                 $status = $dbh->prepare($query);
                 $status->execute();
@@ -1018,14 +1020,18 @@ class rating {
                         $unique_array[$users['id']] = $users;
                     }
                     $selected_tms = substr($selected_tms, 0, -1);
-//                     $query = "select rating.user_id,SUM(case when rating.rating =1 then 1 else 0 end) as rating_plus,
-//                                                         SUM(case when rating.rating =0 then 1 else 0 end) as rating_minus,
-//                                                         SUM(case when rating.rating =2 then 1 else 0 end) as rating_none
-//                                                         from rating as rating where rating.modified_date >= '".$finalDate."' AND rating.user_id in (" . $selected_tms . ") group by rating.user_id ";
-		    $query = "select rating.user_id,SUM(case when rating.rating =1 then 1 else 0 end) as rating_plus,
+                    
+                    if($match_char == 'Show All'){
+                    $query = "select rating.user_id,SUM(case when rating.rating =1 then 1 else 0 end) as rating_plus,
                                                         SUM(case when rating.rating =0 then 1 else 0 end) as rating_minus,
                                                         SUM(case when rating.rating =2 then 1 else 0 end) as rating_none
                                                         from rating as rating where rating.user_id in (" . $selected_tms . ") group by rating.user_id ";
+                    }else{
+                    $query = "select rating.user_id,SUM(case when rating.rating =1 then 1 else 0 end) as rating_plus,
+                                                        SUM(case when rating.rating =0 then 1 else 0 end) as rating_minus,
+                                                        SUM(case when rating.rating =2 then 1 else 0 end) as rating_none
+                                                        from rating as rating where rating.modified_date >= '".$finalDate."' AND rating.user_id in (" . $selected_tms . ") group by rating.user_id ";
+                    }                                    
                     $rating = $dbh->prepare($query);
                     $rating->execute();
                     $rating_result = $rating->fetchAll((PDO::FETCH_ASSOC));
@@ -1448,7 +1454,26 @@ class rating {
                      FROM `request` AS re JOIN users AS u ON (u.id = re.to_id)
                      JOIN users AS u1 ON u1.id = re.for_id WHERE re.for_id = :user_id
                      OR re.to_id = :user_id ORDER BY created_date DESC) AS d
-                     WHERE status <> 0 AND (user_id <> for_id OR for_id IS NULL)ORDER BY d.created_date DESC";
+                     WHERE status <> 0 AND (user_id <> for_id OR for_id IS NULL)ORDER BY d.created_date DESC
+                     ";                     
+            $user_list = $dbh->prepare($query);
+            $user_list->execute(array(':user_id' => $login_user_id));
+            $row = $user_list->fetchAll((PDO::FETCH_ASSOC));
+            return $row;
+        }
+    }
+    
+    function get_my_recent_activity_feedback($login_user_id) {
+        $dbh = $this->get_connection();
+        if ($dbh) {
+
+            $query = "SELECT feedback.feedback_to as feedback_to,feedback.feedback_from as feedback_from,u1.id as user_id,u.google_name,u1.google_name AS ratedby,
+                     u.google_picture_link,u1.google_picture_link AS for_picture,feedback.created_date AS created_date from feedback AS feedback
+                     JOIN users AS u ON (u.id = feedback.feedback_to)
+                     JOIN users AS u1 ON u1.id = feedback.feedback_from
+                     WHERE feedback_from = :user_id
+                     OR feedback.feedback_to = :user_id ORDER BY created_date DESC";
+               
             $user_list = $dbh->prepare($query);
             $user_list->execute(array(':user_id' => $login_user_id));
             $row = $user_list->fetchAll((PDO::FETCH_ASSOC));
@@ -1846,4 +1871,16 @@ class rating {
             return true;
         }
     }
+    
+    function date_compare($a, $b) {
+      $t1 = strtotime($a['created_date']); 
+      $t2 = strtotime($b['created_date']); 
+      return $t2 - $t1; 
+    }
+    
+    function sort_date($result) {
+      usort($result, array('rating','date_compare'));
+      return $result;
+    }
+    
 }
