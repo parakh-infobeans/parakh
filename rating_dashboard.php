@@ -40,10 +40,10 @@
             <?php
         }
         ?>
-	<div id="allchars" style="float:right;margin-right:80px;" class=" link-alphabet Alphas"><a style="color:white;"> <strong style="color: white;padding-top: 0px;">Total Members : </strong> <?= $cnt_team_member; ?> </a></div>
+	<div  style="float:right;margin-right:80px;" class=" link-alphabet "><a style="color:white;"> <strong style="color: white;padding-top: 0px;">Total Members : </strong> <?= $cnt_team_member; ?> </a></div>
         <!--<a href="javascript:void(0);" id="charshowAll" style="float:right;margin-right:80px;" class=" link-alphabet Alphas" title="View all">Show All</a>-->
     </div>
-    <div id="charshowAll" class="link-block-all" style='color:white;padding-bottom: 15px;'><i>Currently displaying results of last 90 days.<a href="javascript:void(0);" class=" link-alphabet Alphas" id="charshowAll" style='color:white;padding:0 5px;text-decoration: underline;' title="Overall Result">Click here</a>to view overall results.</i></div>
+    <div id="charshowAll" class="link-block-all" style='color:white;padding-bottom: 15px;'>Currently displaying results of last 90 days.<a href="javascript:void(0);" class=" link-alphabet Alphas" id="charshowAll" style='color:white;padding:0 5px;text-decoration: underline;'>Click here</a>to view overall results.</div>
     <div id="content_listing" class="mid-col-12" style="padding-top:4px">
     </div>
 
