@@ -988,6 +988,7 @@ class rating {
     }
 
     function rating_dashboard($all_data, $match_char = '') {
+
         $unique_array = array();
         $dbh = $this->get_connection();
         if ($dbh) {
@@ -1002,7 +1003,7 @@ class rating {
                 $tms = substr($tms, 0, -1);
                 $cnd .= " AND  a.id in (" . $tms . ") ";
                 if ($match_char != ''){
-                    if($match_char != 'Show All'){
+                    if($match_char != 'Click here'){
 		      $cnd .= " AND  a.google_name like '" . $match_char . "%' ";
                     }
 		}
@@ -1021,7 +1022,7 @@ class rating {
                     }
                     $selected_tms = substr($selected_tms, 0, -1);
                     
-                    if($match_char == 'Show All'){
+                    if($match_char == 'Click here'){
                     $query = "select rating.user_id,SUM(case when rating.rating =1 then 1 else 0 end) as rating_plus,
                                                         SUM(case when rating.rating =0 then 1 else 0 end) as rating_minus,
                                                         SUM(case when rating.rating =2 then 1 else 0 end) as rating_none
