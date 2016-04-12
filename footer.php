@@ -1,6 +1,6 @@
 </div>
 	</section>
-	<footer class="footer">&copy; Copyright 2015  Infobeans, All Rights Reserved.</footer>
+	<footer class="footer">&copy; Copyright 2016  Infobeans, All Rights Reserved.</footer>
 </div>
 <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>-->
 <script type="text/javascript" src="js/jquery.mCustomScrollbar.concat.min.js"></script>

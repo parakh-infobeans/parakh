@@ -144,7 +144,8 @@ function notifyCopyFeedback($data)
     //$team_member_name=explode(" ", trim($team_member_name));
     //$team_member_name=$team_member_name[0];
     $subject = 'Parakh - Feedback notification';
-    $message.= $team_member_name.' has received a feedback by '.$lead_name.' for "'.$work_desc.'".'.NEWLINE;
+    $message.= $team_member_name.' has received a feedback from '.$lead_name.'.'.NEWLINE;
+    $message.= '"'.$work_desc.'".'.NEWLINE;
     $message.= NEWLINE;
     $message.= EMAIL_FOOTER;
     /* Code to send mail to multiple email start*/ 

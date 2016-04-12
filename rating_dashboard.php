@@ -40,10 +40,15 @@
             <?php
         }
         ?>
-	<div  style="float:right;margin-right:80px;" class=" link-alphabet "><a style="color:white;"> <strong style="color: white;padding-top: 0px;">Total Members : </strong> <?= $cnt_team_member; ?> </a></div>
+	<!--<div  style="float:right;margin-right:80px;" class=" link-alphabet "><a style="color:white;"> <strong style="color: white;padding-top: 0px;">Total Members : </strong> <?= $cnt_team_member; ?> </a></div>-->
         <!--<a href="javascript:void(0);" id="charshowAll" style="float:right;margin-right:80px;" class=" link-alphabet Alphas" title="View all">Show All</a>-->
     </div>
-    <div id="charshowAll" class="link-block-all" style='color:white;padding-bottom: 15px;'>Currently displaying results of last 90 days.<a href="javascript:void(0);" class=" link-alphabet Alphas" id="charshowAll" style='color:white;padding:0 5px;text-decoration: underline;'>Click here</a>to view overall results.</div>
+    <div id="charshowAll" class="link-block-all" style='color:white;padding-bottom: 15px;'>Currently displaying results of last 90 days.<a href="javascript:void(0);" class=" link-alphabet Alphas" id="charshowAll" style='color:white;padding:0 5px;text-decoration: underline;'>Click here</a>to view overall results.
+    <div  style="float:right;margin-right:80px;" class=" link-alphabet "><a style="color:white;"> <strong style="color: white;padding-top: 0px;">Total Members : </strong> <?= $cnt_team_member; ?> </a></div></div>
+    
+    
+    <div id="charshowAll1" class="link-block-all" style='color:white;padding-bottom: 15px;'>Currently displaying overall results.<a href="javascript:void(0);" class=" link-alphabet Alphas" id="charshowAll" style='color:white;padding:0 5px;text-decoration: underline;'>Show</a>last 90 days result.
+    <div  style="float:right;margin-right:80px;" class=" link-alphabet "><a style="color:white;"> <strong style="color: white;padding-top: 0px;">Total Members : </strong> <?= $cnt_team_member; ?> </a></div></div>
     <div id="content_listing" class="mid-col-12" style="padding-top:4px">
     </div>
 
@@ -54,6 +59,7 @@
         $(document).ready(function () {
             $(".succes-green").hide();
             $(".succes-green-feedback").hide();
+            $("#charshowAll1").hide();
             var alphaVal = $(".link-all").html();
 
             $.post("user_rating_dashboard.php", '', function (response) {
@@ -66,6 +72,18 @@
                 console.log(alphaVal);
                 $("#allchars a").removeClass("link-all");
                 $.post("user_rating_dashboard.php", data, function (response) {
+		    if(alphaVal == 'Click here'){
+                        $("#charshowAll1").show();
+                        $("#charshowAll").hide();
+                        $("#allchars").hide();
+                    }else{
+                        $("#charshowAll").show();
+                        $("#charshowAll1").hide();
+                        if(alphaVal == 'Show'){
+                        $("#charAll").addClass("link-all");
+                        $("#allchars").show();
+                        }
+                    }
                     $("#char" + alphaVal).addClass("link-all");
                     $("#content_listing").html(response);
                 });
