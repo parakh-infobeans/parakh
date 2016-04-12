@@ -1003,7 +1003,7 @@ class rating {
                 $tms = substr($tms, 0, -1);
                 $cnd .= " AND  a.id in (" . $tms . ") ";
                 if ($match_char != ''){
-                    if($match_char != 'Click here'){
+                    if($match_char != 'Click here' && $match_char != 'Show'){
 		      $cnd .= " AND  a.google_name like '" . $match_char . "%' ";
                     }
 		}
