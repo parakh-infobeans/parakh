@@ -1882,8 +1882,9 @@ class rating {
                 ':created_date' => $created_date,
                 ':modified_date' => $modified_date,
                 ));
-//              if (isset($data['action']) && ($data['action'] == 'btn_click'))
-//                  notifyFeedback($data);
+              if (isset($data['action']) && ($data['action'] == 'btn_click')){
+                  notifyFeedback($data,'response');
+              }  
             return true;
         }
     }

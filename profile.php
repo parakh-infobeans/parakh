@@ -1,6 +1,7 @@
 <?php
     require_once 'config.php';
     require_once 'class/rating.php';
+    require_once 'functions/functions.php';
     $renderObj = new rating();
    
     if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'){
@@ -223,6 +224,7 @@
                 beforeSend: function () {
                     $(".ajaxLoader").show();
                     $('.dialoguebox2').hide();
+                    $('.popup-content').hide();
                 },
                 complete: function () {
                     $(".ajaxLoader").hide();
@@ -335,7 +337,7 @@
                         $(".textarea-dialogue").addClass("red-border");
                         return false;
                     }
-			$.post("profile.php?", data, function (response) {
+			$.post("profile.php", data, function (response) {
 			window.location.reload();
 
                     });
