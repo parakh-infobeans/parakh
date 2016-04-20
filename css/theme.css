@@ -1945,3 +1945,65 @@ a.a-down:hover{
     top: 0;
     width: 100%;
 }
+
+/*********** Response CSS *********/
+
+.profile-lft-row-response{
+	width:96%;
+	height:auto;
+	float:left;
+	padding:10px 2%;
+}
+.profile-lft-row-response:nth-child(even){
+	background-color:#ececec;
+        //text-align:right;
+}
+.view_response{
+    background-color: #ff5959;
+    padding-top:10px;
+    color: white;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    text-align: center;        
+    }    
+    .response-textarea{
+    padding:10px;
+    margin-top:-18px;
+    }
+    .response_description{
+    height: 250px;
+    margin-top: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 10px;    
+    }
+    .popup-content {
+    background-color: #fff;
+    bottom: 0;
+    height: 500px;
+    left: 0;
+    margin: auto;
+    //padding: 10px;//30px;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 550px;
+    z-index: 999999;
+    //border-radius:10px;
+    //overflow-x: hidden;
+    //overflow-y: scroll;
+	}
+    .popup-inputbox {
+    	    height: 80px;
+    margin-top: 35px;
+    width: 98%;
+    }
+    .pop-up-submit {
+    	float: right;
+    	margin-top: 10px;
+    }
+    .sub-response-title {
+    color: gray;
+    font-size: 10px;
+    font-weight: 500;
+    }

@@ -50,7 +50,7 @@
                             
                             
                             <a href="javascript:void(0);"><img src="images/add-btn.png"/></a>
-                            <a href="./profile.php?id=<?= $val['id'] ?>&edit_comment=true"><img src="images/view-btn.png"/></a>
+                            <a href="./profile.php?id=<?= $val['id'] ?>&edit_comment=true"><img title="View Profile" src="images/view-btn.png"/></a>
                             <a href="javascript:void(0);"><img src="images/delete-btn.png"/></a>
                         </div>
                         <div class="action-acc-parent-inner"></div>

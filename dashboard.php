@@ -367,9 +367,24 @@ $lead_list = $renderObj->get_all_lead($user_id);
                                             <?php } ?>
                                             </div>
                                         <?php } ?>
-                                        <?php if(empty($value['rating'])){ ?>
-                                        
-					<?php	if ($value['user_id'] == $user_id) { ?>
+                                        <?php if(empty($value['rating'])){ 
+                                            if ($value['response_parent'] !='0'){ 
+                                                    if ($value['user_id'] == $user_id) { ?>
+                                                <div class="lft-div-my-team marginbot10">
+					       <div class="div-team-lft-img" title="<?= date("F j, Y, g:i a",strtotime($value['created_date']));?>"><img src="<?= $value['for_picture']; ?>" width="50" height="50" /></div>
+                                               <div class="div-team-lft-txt" title="<?= date("F j, Y, g:i a", strtotime($value['created_date'])); ?>">
+                                               <b>You</b> have given a response to <a href="javascript:void(0);" class="name" ><strong><?= $value['google_name'];  ?></strong></a>   
+                                               </div>
+                                        </div> 
+                                            <?php }else { ?>
+                                                <div class="lft-div-my-team marginbot10">
+					       <div class="div-team-lft-img" title="<?= date("F j, Y, g:i a",strtotime($value['created_date']));?>"><img src="<?= $value['for_picture']; ?>" width="50" height="50" /></div>
+                                               <div class="div-team-lft-txt" title="<?= date("F j, Y, g:i a", strtotime($value['created_date'])); ?>">
+                                               <a href="javascript:void(0);" class="name" ><strong><?= $value['ratedby'];  ?></strong></a> has given a response
+                                               </div>
+                                               </div>       
+                                            <?php }}else {
+                                                if ($value['user_id'] == $user_id) { ?>
 					<div class="lft-div-my-team marginbot10">
 					       <div class="div-team-lft-img" title="<?= date("F j, Y, g:i a",strtotime($value['created_date']));?>"><img src="<?= $value['for_picture']; ?>" width="50" height="50" /></div>
                                                <div class="div-team-lft-txt" title="<?= date("F j, Y, g:i a", strtotime($value['created_date'])); ?>">
@@ -383,7 +398,7 @@ $lead_list = $renderObj->get_all_lead($user_id);
                                                Feedback received from <a href="javascript:void(0);" class="name" ><strong><?= $value['ratedby'];  ?></strong></a>   
                                                </div>
                                          </div>      
-                                        <?php } } ?>
+                                        <?php } } }?>
                                         
                                         <?php
                                     }
