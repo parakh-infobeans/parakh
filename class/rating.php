@@ -1889,6 +1889,20 @@ class rating {
         }
     }
     
+    function get_feedback_title($feedback_id) {
+        $dbh = $this->get_connection();
+        if ($dbh) {
+            $query = "SELECT feedback.feedback_description as description"
+                    . " FROM " . self::TAB_FEEDBACK . " AS feedback  
+                    WHERE feedback.id= :feedback_id ";
+                    
+            $feedbackTitle = $dbh->prepare($query);
+            $feedbackTitle->execute(array(':feedback_id' => $feedback_id));
+            $row = $feedbackTitle->fetch((PDO::FETCH_ASSOC));
+            return $row;
+        }
+    }
+    
     function date_compare($a, $b) {
       $t1 = strtotime($a['created_date']); 
       $t2 = strtotime($b['created_date']); 

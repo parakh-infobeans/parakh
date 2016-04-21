@@ -113,6 +113,7 @@ function notifyFeedback($data, $option = NULL)
     $userObj= new rating();
     $lead_name = $userObj->get_user_full_name($_SESSION['userinfo']->id);
     if($option == 'response'){
+    $feedbackTitle = $userObj->get_feedback_title($data['feedback_id']);      
     $team_member_name=$userObj->get_user_full_name($data['feedback_to']);    
     }else{
     $team_member_name=$userObj->get_user_full_name($data['user_id']);
@@ -127,7 +128,7 @@ function notifyFeedback($data, $option = NULL)
     }
     $message = 'Dear '.$team_member_name.','.NEWLINE;
     if($option == 'response'){
-    $message.= 'You have received a response from '.$lead_name.'.'.NEWLINE." Login to <a href='".SITE_URL."'>".SITE_NAME.'</a> to view details.'.NEWLINE;    
+    $message.= 'You have received a response from '.$lead_name.' on feedback: "'.$feedbackTitle['description'].'".'.NEWLINE." Login to <a href='".SITE_URL."'>".SITE_NAME.'</a> to view details.'.NEWLINE;    
     }else{
     $message.= 'You have received a feedback from '.$lead_name.'.'.NEWLINE." Login to <a href='".SITE_URL."'>".SITE_NAME.'</a> to view details.'.NEWLINE;
     }
