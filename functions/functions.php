@@ -113,7 +113,9 @@ function notifyFeedback($data, $option = NULL)
     $userObj= new rating();
     $lead_name = $userObj->get_user_full_name($_SESSION['userinfo']->id);
     if($option == 'response'){
-    $feedbackTitle = $userObj->get_feedback_title($data['feedback_id']);      
+    $feedbackTitle = $userObj->get_feedback_title($data['feedback_id']);
+    $data['feedback_title'] = $feedbackTitle['description'];
+    $data['feedback_from'] = $feedbackTitle['feedback_from'];
     $team_member_name=$userObj->get_user_full_name($data['feedback_to']);    
     }else{
     $team_member_name=$userObj->get_user_full_name($data['user_id']);
@@ -153,7 +155,8 @@ function notifyCopyFeedback($data,$option)
     $userObj= new rating();
     $lead_name = $userObj->get_user_full_name($_SESSION['userinfo']->id);
     if($option == 'response'){
-    $team_member_name=$userObj->get_user_full_name($data['feedback_to']);    
+    $team_member_name=$userObj->get_user_full_name($data['feedback_to']);
+    $team_member_name_from=$userObj->get_user_full_name($data['feedback_from']);
     $work_desc = $data['feedback_desc'];
     }else{
     $team_member_name=$userObj->get_user_full_name($data['user_id']);
@@ -168,11 +171,16 @@ function notifyCopyFeedback($data,$option)
     $subject = 'Parakh - Feedback notification';
     }
     if($option == 'response'){
-    $message.= $team_member_name.' has received a response from '.$lead_name.'.'.NEWLINE;    
+    $message.= $team_member_name.' has received a response from '.$lead_name.'.'.NEWLINE.NEWLINE;    
+    $message.= '"'.$data['feedback_title'].'" posted by '.$team_member_name_from.NEWLINE;
+    $get_response = $userObj->get_response($data['feedback_id']);
+    foreach ($get_response as $key=>$val){
+    $message.= '"'.$val['description'].'" posted by '.$val['given_by_name'].NEWLINE;
+    }
     }else{
     $message.= $team_member_name.' has received a feedback from '.$lead_name.'.'.NEWLINE;
-    }
     $message.= '"'.$work_desc.'".'.NEWLINE;
+    }    
     $message.= NEWLINE;
     $message.= EMAIL_FOOTER;
     /* Code to send mail to multiple email start*/ 

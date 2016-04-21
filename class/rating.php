@@ -1892,7 +1892,7 @@ class rating {
     function get_feedback_title($feedback_id) {
         $dbh = $this->get_connection();
         if ($dbh) {
-            $query = "SELECT feedback.feedback_description as description"
+            $query = "SELECT feedback.feedback_description as description,feedback.feedback_from as feedback_from"
                     . " FROM " . self::TAB_FEEDBACK . " AS feedback  
                     WHERE feedback.id= :feedback_id ";
                     
