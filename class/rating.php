@@ -1468,7 +1468,7 @@ class rating {
         $dbh = $this->get_connection();
         if ($dbh) {
 
-            $query = "SELECT feedback.feedback_to as feedback_to,feedback.feedback_from as feedback_from,u1.id as user_id,u.google_name,u1.google_name AS ratedby,
+            $query = "SELECT feedback.response_parent as response_parent,feedback.feedback_to as feedback_to,feedback.feedback_from as feedback_from,u1.id as user_id,u.google_name,u1.google_name AS ratedby,
                      u.google_picture_link,u1.google_picture_link AS for_picture,feedback.created_date AS created_date from feedback AS feedback
                      JOIN users AS u ON (u.id = feedback.feedback_to)
                      JOIN users AS u1 ON u1.id = feedback.feedback_from
@@ -1833,10 +1833,10 @@ class rating {
     function get_feedback($user_id) {
         $dbh = $this->get_connection();
         if ($dbh) {
-            $query = "SELECT feedback.feedback_from as feedback_from,feedback.id as id,feedback.feedback_description as description,feedback.created_date as created_date,user.google_name as given_by_name"
+            $query = "SELECT feedback.feedback_to as feedback_to,feedback.feedback_from as feedback_from,feedback.id as id,feedback.feedback_description as description,feedback.created_date as created_date,user.google_name as given_by_name"
                     . " FROM " . self::TAB_FEEDBACK . " AS feedback  
                     LEFT JOIN " . self::TAB_USER . " AS user ON user.id = feedback.feedback_from
-                    WHERE feedback.feedback_to= :user_id  ORDER BY feedback.created_date desc ";
+                    WHERE feedback.feedback_to= :user_id AND (feedback.response_parent=0 OR feedback.response_parent is NULL) ORDER BY feedback.created_date desc ";
                     
             $user_list = $dbh->prepare($query);
             $user_list->execute(array(':user_id' => $user_id));
@@ -1845,8 +1845,23 @@ class rating {
         }
     }
     
-    function feedbackResponseSave($data) {
+    function get_response($feedback_id) {
+        $dbh = $this->get_connection();
+        if ($dbh) {
+            $query = "SELECT feedback.feedback_from as feedback_from,feedback.id as id,feedback.feedback_description as description,feedback.created_date as created_date,user.google_name as given_by_name,user1.google_name as name"
+                    . " FROM " . self::TAB_FEEDBACK . " AS feedback  
+                    LEFT JOIN " . self::TAB_USER . " AS user ON user.id = feedback.feedback_from
+                    LEFT JOIN " . self::TAB_USER . " AS user1 ON user1.id = feedback.feedback_to    
+                    WHERE feedback.response_parent= :feedback_id ORDER BY feedback.created_date asc ";
+                    
+            $user_list = $dbh->prepare($query);
+            $user_list->execute(array(':feedback_id' => $feedback_id));
+            $row = $user_list->fetchAll((PDO::FETCH_ASSOC));
+            return $row;
+        }
+    }
     
+    function feedbackResponseSave($data) {
         
         $data['feedback_desc'] = $data['desc'];
         $dbh = $this->get_connection();
@@ -1857,7 +1872,7 @@ class rating {
 
             $feedback_insert_query = "INSERT INTO " . self::TAB_FEEDBACK . "(" . self::TAB_FEEDBACK_TO . ", " . self::TAB_FEEDBACK_DESCRIPTION . ", " . self::TAB_FEEDBACK_FROM . ", ".self::TAB_FEEDBACK_RESPONSE_PARENT.", " . self::TAB_FEEDBACK_CREATED_DATE . ", " . self::TAB_FEEDBACK_MODIFIED_DATE . ")
                                                                 VALUES(:feedback_to,:feedback_description,:feedback_from,:response_parent,:created_date,:modified_date)";
-            echo  $feedback_insert_query;exit;                                                   
+                                                         
             $feedback_insert = $dbh->prepare($feedback_insert_query);
             $feedback_insert->execute(array(':feedback_to' => $data['feedback_to'],
                 //':work_title' => $data['work_title'],
@@ -1867,9 +1882,24 @@ class rating {
                 ':created_date' => $created_date,
                 ':modified_date' => $modified_date,
                 ));
-//              if (isset($data['action']) && ($data['action'] == 'btn_click'))
-//                  notifyFeedback($data);
+              if (isset($data['action']) && ($data['action'] == 'btn_click')){
+                  notifyFeedback($data,'response');
+              }  
             return true;
+        }
+    }
+    
+    function get_feedback_title($feedback_id) {
+        $dbh = $this->get_connection();
+        if ($dbh) {
+            $query = "SELECT feedback.feedback_description as description,feedback.feedback_from as feedback_from"
+                    . " FROM " . self::TAB_FEEDBACK . " AS feedback  
+                    WHERE feedback.id= :feedback_id ";
+                    
+            $feedbackTitle = $dbh->prepare($query);
+            $feedbackTitle->execute(array(':feedback_id' => $feedback_id));
+            $row = $feedbackTitle->fetch((PDO::FETCH_ASSOC));
+            return $row;
         }
     }
     

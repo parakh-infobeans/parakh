@@ -1,6 +1,7 @@
 <?php
     require_once 'config.php';
     require_once 'class/rating.php';
+    require_once 'functions/functions.php';
     $renderObj = new rating();
    
     if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'){
@@ -8,7 +9,7 @@
 	$record = $renderObj->edit_comment($_POST);
       }
       if($_POST['comment'] == 'response'){
-	$record = $renderObj->feedbackResponseSave($_POST);
+        $record = $renderObj->feedbackResponseSave($_POST);
       }
     }
    
@@ -20,6 +21,7 @@
     $record = $renderObj->get_profile($user_id);
     $get_work_rating = $renderObj->get_work_rating($user_id);
     $get_feedback = $renderObj->get_feedback($user_id);
+    
    
     if($record != 0)
     {
@@ -105,6 +107,7 @@
    
     foreach(@$get_feedback as $key=>$val)
     {
+    $get_response = $renderObj->get_response($val['id']);    
     $i++;
     $date = 'N/A';
     if($val['created_date'])
@@ -119,22 +122,26 @@
             $html_for_feedback .= $val['description'];
 
             $html_for_feedback .= '</p></div>';
-            $html_for_feedback .= '<div class="box-three"><p>'.$val['given_by_name'].'</p></div><div class="box-four"><p>'.$date.'</p></div></div>';
-//             $html_for_feedback .= '<div class="box-three"><p>'.$val['given_by_name'].'</p></div>
-// 				   <div class="box-four"><p>'.$date.'</p></div>
-// 				   <div class="box-one"><a id="response|'.$val["id"] .'|'.$i.'|'.$val['feedback_from'].'" class="response-btn" style="text-align: center;" href="javascript:void(0);">View</a> </div></div>';
-// 	    $html_for_feedback .= '<div class="overlay" id="overlay_response_'.$val["id"].'"></div>
-// 				   <div class="popup-content" id="responseDialog_'.$val["id"].'">
-// 				   <p class="subname-txt">'.$val['description'].'</p>
-// 				   <p class="grysubname">fdvfdv</p>
-// 				   <p class="subname-txt">fdvfdv</p>';
-// 	//if($_SESSION['userinfo']->id == $user_id){			   
-// 	    $html_for_feedback .= '<textarea class="popup-inputbox response_comment_'.$val["id"].'" placeholder="type your response here..."></textarea>
-// 				   <div class="pop-up-submit">
-// 				   <input class="edit-submit-btn" name="edit-submit-btn" id="edit-submit-btn" type="button" value="Submit">	
-// 				   </div>				
-// 				   </div>';
-// 	//}
+            
+            $html_for_feedback .= '<div class="box-three"><p>'.$val['given_by_name'].'</p></div>
+ 				   <div class="box-four"><p>'.$date.'</p></div>
+ 				   <div class="box-one"><a id="response|'.$val["id"] .'|'.$val['feedback_from'].'|'.$val['feedback_to'].'" class="response-btn" style="text-align: center;" href="javascript:void(0);">View</a> </div></div>';
+            $html_for_feedback .= '<div class="overlay" id="overlay_response_'.$val["id"].'"></div>
+                                   <div class="popup-content" id="responseDialog_'.$val["id"].'">
+                                   <div class="view_response"> <b>View Response</b> </div>    
+                                   <div class="dialogue-close2" style="right:13px;">
+                                   <img style="margin-left:4px;" width="20" height="20" title="Close" src="images/close-btn-response.png">
+                                   </div>  <div class="response_description">
+                                   <p class="profile-lft-row-response"><span style=" word-wrap: break-word;">'.$val['description'].'</span><br><span class="sub-response-title"><i>Posted by : '.$val['given_by_name'].' on '.$date.'</i></span></p>';
+            foreach($get_response as $key=>$val1){
+                $date_response = date("d-M-Y", strtotime($val1['created_date']));
+                $html_for_feedback .= '<p class="profile-lft-row-response"><span style=" word-wrap: break-word;">'.$val1['description'].'</span><br><span class="sub-response-title"><i>Posted by : '.$val1['given_by_name'].' on '.$date_response.'</i></span></p>';
+            }
+            $html_for_feedback .= '</div><div class="response-textarea"><textarea class="popup-inputbox response_comment_'.$val["id"].'" placeholder="type your response here..."></textarea>
+				   <div class="pop-up-submit">
+ 				   <input class="edit-submit-btn" name="edit-submit-btn" id="edit-submit-btn" type="button" value="Submit">	
+ 				   </div> </div></div>';
+
     }
     $html_for_minus_one = ($html_for_minus_one == '') ? "<div class='center'>No ratings available.</div>" : $html_for_minus_one;
     $html_for_plus_one = ($html_for_plus_one == '') ? "<div class='center'>No ratings available.</div>" : $html_for_plus_one;
@@ -192,7 +199,7 @@
 		    <p><b>Given On</b></p>
 		    </div>
 		    <div class="box-one">
-		    <!--<p><b>Action</b></p>-->
+		    <p><b>Action</b></p>
 		    </div>
 		    </div>
 		    <?php } ?>
@@ -210,12 +217,14 @@
      <div id="ajaxBusy" class="ajaxLoader"><p><img id="imgAjaxLoader" class="ajaxLoaderImg" src="./images/loading.gif" /></p></div>
     <script type="text/javascript">
         $(document).ready(function () {
+              
         $('.popup-content').hide();
 	    var button = '';
             $.ajaxSetup({
                 beforeSend: function () {
                     $(".ajaxLoader").show();
                     $('.dialoguebox2').hide();
+                    $('.popup-content').hide();
                 },
                 complete: function () {
                     $(".ajaxLoader").hide();
@@ -234,11 +243,11 @@
             
             $('a.response-btn').click(function () {
                 var val = this.id.split('|');
-                //$('div#overlay_' + val[0] + '_' + val[1]).show();
+                $('div#overlay_' + val[0] + '_' + val[1]).show();
                 $('div#responseDialog_' + val[1]).show();
                 var flag = '';
                 $('.edit-submit-btn').bind('click', {"val": val, "flag": ""}, responseSubmit);
-                //$('.dialogue-close2').bind('click', {}, closeEditCommentDialog);
+                $('.dialogue-close2').bind('click', {}, closeResponseDialog);
             });
 	    
 	    function closeEditCommentDialog(event)
@@ -246,6 +255,15 @@
                 $(".textarea-dialogue").removeClass("red-border");
                 $('.overlay').hide();
                 $(this).parent('.dialoguebox2').hide();
+                //window.location.reload();
+            }
+            
+            function closeResponseDialog(event)
+            {
+                $(".textarea-dialogue").removeClass("red-border");
+                $('.overlay').hide();
+                $('.popup-content').hide();
+                //$(this).parent('.dialoguebox2').hide();
                 //window.location.reload();
             }
 
@@ -268,7 +286,6 @@
                 if (bit != '')
                 {
                     $.post("profile.php", data, function (response) {
-                        $("#content_listing").html(response);
                         $(".succes-green").show();
                         $('.overlay').hide();
                     });
@@ -288,7 +305,7 @@
             
             function responseSubmit(event)
             {
-            console.log(event);
+            
                 var val = event.data.val;
                 var bit = event.data.flag;
                 var msg = '';
@@ -300,24 +317,28 @@
                 {
                     var mess = $(".response_comment_" + id).val();
                 }
-                var data = "&action=btn_click&feedback_id=" + id + "&comment=" + wchBtn + "&desc=" + mess + "&feedback_to=" + val[3];
+                <?php if($_SESSION['userinfo']->id != $user_id) { //Response given by Lead/Manager on parent feedback?>
+                    var data = "&action=btn_click&feedback_id=" + id + "&comment=" + wchBtn + "&desc=" + mess + "&feedback_to=" + val[3];    
+                <?php } else { //Response given by Team member on parent feedback?>
+                    var data = "&action=btn_click&feedback_id=" + id + "&comment=" + wchBtn + "&desc=" + mess + "&feedback_to=" + val[2];
+                <?php } ?>
+                
                 var resp = "";
                 if (bit != '')
                 {
-                    $.post("profile.php", data, function (response) {
-                        $("#content_listing").html(response);
+                        $.post("profile.php", data, function (response) {
                         $(".succes-green").show();
                         $('.overlay').hide();
                     });
                 }else
                 {
-                    if (clkBtn == 'submit_btn' && mess == '')
+                    if (clkBtn == 'edit-submit-btn' && mess == '')
                     {
                         $(".textarea-dialogue").addClass("red-border");
                         return false;
                     }
-			$.post("profile.php?"+val[3]+"&edit_comment=true", data, function (response) {
-			//window.location.reload();
+			$.post("profile.php", data, function (response) {
+			window.location.reload();
 
                     });
                 }
@@ -326,47 +347,6 @@
     </script>
    
     <style>
-    .popup-content {
-	border: 1px solid #ccc;
-    width: 300px;
-    overflow: hidden;
-    padding: 10px;
-	}
-.popname-txt {
-	 height: 30px;
-    padding: 5px;
-    width: 30%;
-    margin-top: 5px;
-	}
-.subname-txt {
-	    padding: 5px;
-    width: 100%;
-	}
-.gryname-text {
-    background: #ececec none repeat scroll 0 0;
-    float: right;
-    margin-top: 5px;
-    padding: 5px;
-    width: 30%;
-    }
-    .grysubname {
-    	    background: #ececec none repeat scroll 0 0;
-    display: inline-block;
-    text-align: right;
-    padding: 5px;
-    width: 96.5%;
-    }
-    .popup-inputbox {
-    	    height: 80px;
-    margin-top: 10px;
-    width: 98%;
-    }
-    .pop-up-submit {
-    	float: right;
-    	margin-top: 10px;
-    }
-    
-    
     
     
     #content-3 .mCustomScrollBox{
@@ -376,6 +356,7 @@
     border-bottom: 1px dashed #515151;
     color: #515151;
     text-decoration: none;
+    margin-top:10px;
     }
     .red-border {
     border: 1px solid red;
