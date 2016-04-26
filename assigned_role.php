@@ -5,7 +5,7 @@ $flag = 1;
 $role_flag = 2;
 $renderObj = new rating();
 $record = $renderObj->get_profile($_GET["id"]);
-$all_user_list = $renderObj->get_user_list($_GET["id"]);
+$all_user_list = $renderObj->get_user_list_admin($_GET["id"]);
 
 $all_roles = $renderObj->get_all_role_for_admin();
 $get_lead = $renderObj->get_all_lead($_GET["id"],$flag,'');

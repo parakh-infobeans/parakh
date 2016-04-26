@@ -1988,7 +1988,8 @@ a.a-down:hover{
     right: 0;
     top: 0;
     width: 550px;
-    z-index: 999999;
+    z-index: 101;
+    //z-index: 999999;
     //border-radius:10px;
     //overflow-x: hidden;
     //overflow-y: scroll;
@@ -2007,3 +2008,17 @@ a.a-down:hover{
     font-size: 10px;
     font-weight: 500;
     }
+    
+    .overlay_response{
+	background-color:#111;
+	position:fixed;
+	top:0;
+	bottom:0;
+	left:0;
+	display:none;
+	right:0;
+	z-index:101;
+	opacity:.6;
+	filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
+	-MS-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
+}

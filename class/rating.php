@@ -255,6 +255,37 @@ class rating {
             }
         }
     }
+    
+    function get_user_list_admin($id = null) {
+        $dbh = $this->get_connection();
+        if ($dbh) {
+            if (isset($id)) {
+                $role_type = "SELECT id FROM " . self::TAB_ROLE_TYPE . " WHERE " . self::COL_TAB_ROLE_TYPE_SN . " = 'TL' OR " . self::COL_TAB_ROLE_TYPE_SN . " = 'M'";
+                $role_id = $dbh->prepare($role_type);
+                $role_id->execute();
+                $role_type_id = $role_id->fetchAll((PDO::FETCH_ASSOC));
+                $ids = '';
+                if (count($role_type_id) > 0) {
+                    foreach ($role_type_id as $val) {
+                        $ids .= $val['id'] . ",";
+                    }
+
+                    $ids = substr($ids, 0, -1);
+                }
+                $query = "SELECT * FROM " . self::TAB_USER . " WHERE id != :id AND status = 1  AND role_id in ( " . $ids . " ) ORDER BY google_name Asc";
+                $user_list = $dbh->prepare($query);
+                $user_list->execute(array(':id' => $id));
+                $row = $user_list->fetchAll((PDO::FETCH_ASSOC));
+                return $row;
+            } else {
+                $query = "SELECT * FROM " . self::TAB_USER . " ORDER BY google_name Asc";
+                $user_list = $dbh->prepare($query);
+                $user_list->execute();
+                $row = $user_list->fetchAll((PDO::FETCH_ASSOC));
+                return $row;
+            }
+        }
+    }
 
     function assigned_role($data, $old_lead = null) {
 

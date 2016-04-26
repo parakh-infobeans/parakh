@@ -337,7 +337,7 @@ $lead_list = $renderObj->get_all_lead($user_id);
                                                                 <div class="div-team-lft-img" title="<?= date("F j, Y, g:i a",strtotime($value['created_date']));?>"><img src="<?= $value['google_picture_link']; ?>" width="50" height="50" /></div>
                                                                 <div class="div-team-lft-txt" title="<?= date("F j, Y, g:i a", strtotime($value['created_date'])); ?>">
                                                                 <a href="javascript:void(0);" class="name" ><strong>You</strong></a>   
-                                                                approved <strong><?= $value['rated_to'];  ?> </strong> <strong class="green-div"> +1</strong> request.</div>
+                                                                approved <strong><?= $value['rated_to'];  ?> </strong><br> <strong class="green-div"> +1</strong> request.</div>
                                                         <?php
                                                         } else {
                                                                 ?>
@@ -345,7 +345,7 @@ $lead_list = $renderObj->get_all_lead($user_id);
                                                                     <div class="div-team-lft-img" title="<?= date("F j, Y, g:i a",strtotime($value['created_date']));?>"><img src="<?= $value['google_picture_link']; ?>" width="50" height="50" /></div>
                                                                     <div class="div-team-lft-txt" title="<?= date("F j, Y, g:i a", strtotime($value['created_date'])); ?>">                                                   
                                                                     <a href="javascript:void(0);" class="name" ><strong><?= $value['ratedby'] ?></strong></a> 
-                                                                    approved your <strong class="green-div">+1</strong> request</div>
+                                                                    approved your <br><strong class="green-div">+1</strong> request</div>
 
                                                         <?php } } else { ?> 
                                                     
