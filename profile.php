@@ -125,17 +125,18 @@
             
             $html_for_feedback .= '<div class="box-three"><p>'.$val['given_by_name'].'</p></div>
  				   <div class="box-four"><p>'.$date.'</p></div>
- 				   <div class="box-one"><a id="response|'.$val["id"] .'|'.$val['feedback_from'].'|'.$val['feedback_to'].'" class="response-btn" style="text-align: center;" href="javascript:void(0);">View</a> </div></div>';
+ 				   <div class="box-one"><a id="response|'.$val["id"] .'|'.$val['feedback_from'].'|'.$val['feedback_to'].'" class="response-btn" style="text-align: center;" href="javascript:void(0);"><img style="max-width:55%;" src="images/eye-view.png" title="View Response"></a> </div></div>';
             $html_for_feedback .= '<div class="overlay" id="overlay_response_'.$val["id"].'"></div>
                                    <div class="popup-content" id="responseDialog_'.$val["id"].'">
                                    <div class="view_response"> <b>View Response</b> </div>    
                                    <div class="dialogue-close2" style="right:13px;">
                                    <img style="margin-left:4px;" width="20" height="20" title="Close" src="images/close-btn-response.png">
                                    </div>  <div class="response_description">
-                                   <p class="profile-lft-row-response"><span style=" word-wrap: break-word;">'.$val['description'].'</span><br><span class="sub-response-title"><i>Posted by : '.$val['given_by_name'].' on '.$date.'</i></span></p>';
+                                   <div class="overlay_response" id="overlay_responsenew_'.$val["id"].'"></div>
+                                   <p class="profile-lft-row-response"><span style=" word-wrap: break-word;">'.$val['description'].'</span><br><span class="sub-response-title">Posted by : '.$val['given_by_name'].' on '.$date.'</span></p>';
             foreach($get_response as $key=>$val1){
                 $date_response = date("d-M-Y", strtotime($val1['created_date']));
-                $html_for_feedback .= '<p class="profile-lft-row-response"><span style=" word-wrap: break-word;">'.$val1['description'].'</span><br><span class="sub-response-title"><i>Posted by : '.$val1['given_by_name'].' on '.$date_response.'</i></span></p>';
+                $html_for_feedback .= '<p class="profile-lft-row-response"><span style=" word-wrap: break-word;">'.$val1['description'].'</span><br><span class="sub-response-title">Posted by : '.$val1['given_by_name'].' on '.$date_response.'</span></p>';
             }
             $html_for_feedback .= '</div><div class="response-textarea"><textarea class="popup-inputbox response_comment_'.$val["id"].'" placeholder="type your response here..."></textarea>
 				   <div class="pop-up-submit">
@@ -217,17 +218,17 @@
      <div id="ajaxBusy" class="ajaxLoader"><p><img id="imgAjaxLoader" class="ajaxLoaderImg" src="./images/loading.gif" /></p></div>
     <script type="text/javascript">
         $(document).ready(function () {
-              
         $('.popup-content').hide();
 	    var button = '';
             $.ajaxSetup({
                 beforeSend: function () {
                     $(".ajaxLoader").show();
                     $('.dialoguebox2').hide();
-                    $('.popup-content').hide();
+                    //$('.popup-content').hide();
                 },
                 complete: function () {
                     $(".ajaxLoader").hide();
+                    $('.overlay_response').hide();
                 }
             });
            
@@ -244,6 +245,7 @@
             $('a.response-btn').click(function () {
                 var val = this.id.split('|');
                 $('div#overlay_' + val[0] + '_' + val[1]).show();
+                $('div#overlay_' + val[0] + 'new_' + val[1]).hide();
                 $('div#responseDialog_' + val[1]).show();
                 var flag = '';
                 $('.edit-submit-btn').bind('click', {"val": val, "flag": ""}, responseSubmit);
@@ -337,8 +339,15 @@
                         $(".textarea-dialogue").addClass("red-border");
                         return false;
                     }
+                        $('.overlay_response').show();   
 			$.post("profile.php", data, function (response) {
-			window.location.reload();
+                        <?php $lead_name = $renderObj->get_user_full_name($_SESSION['userinfo']->id); $date_response=date("d-M-Y");?>
+                        var leadName = '<?php echo $lead_name; ?>';
+                        var date = '<?php echo $date_response; ?>'; 
+                        $('.overlay_response').hide();
+                        $(".response_description").append("<p class='profile-lft-row-response'><span style='word-wrap: break-word;'>"+mess+"</span><br><span class='sub-response-title'>Posted by : "+leadName+" on "+date+"</span></p>");
+                        $(".response_comment_" + id).val('');
+			//window.location.reload();
 
                     });
                 }

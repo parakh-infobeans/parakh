@@ -176,7 +176,7 @@ function notifyCopyFeedback($data,$option)
     $get_response = $userObj->get_response($data['feedback_id']);
     foreach ($get_response as $key=>$val){
     $message.= '"'.$val['description'].'" posted by '.$val['given_by_name'].NEWLINE;
-    }
+        }
     }else{
     $message.= $team_member_name.' has received a feedback from '.$lead_name.'.'.NEWLINE;
     $message.= '"'.$work_desc.'".'.NEWLINE;
